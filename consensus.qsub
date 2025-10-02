@@ -1,0 +1,22 @@
+#!/bin/bash
+#SBATCH --job-name=consensus   #Job name
+#SBATCH --mail-type=NONE   # Mail events (NONE, BEGIN, END, FAIL, ALL)
+#SBATCH --mail-user=brittany.magalis@louisville.edu   # Where to send mail
+#SBATCH --time=00:05:00   # Walltime (hours-min-sec)
+#SBATCH --output=consensus.%j.out   # Name output file
+##SBATCH --account=salemi
+##SBATCH --qos=salemi-b
+#SBTACH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=1gb
+
+#date;hostname;pwd
+REF=/blue/salemi/share/tapestri/SIV_ref_unambiguous.fa
+BAM=$1
+echo $BAM
+OUT=${BAM%.bam}_consensus
+
+module purge
+module load samtools ivar
+
+samtools mpileup -d 600000 -A -Q 0 -f $REF $BAM | ivar consensus -p $OUT -q 10 -t 0.5

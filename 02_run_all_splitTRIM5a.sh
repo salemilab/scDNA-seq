@@ -1,16 +1,16 @@
 #!/bin/bash
-#SBATCH --job-name=split_SIV   #Job name	
-#SBATCH --mail-type=END   # Mail events (NONE, BEGIN, END, FAIL, ALL)
+#SBATCH --job-name=split_TRIM5   #Job name	
+#SBATCH --mail-type=NONE   # Mail events (NONE, BEGIN, END, FAIL, ALL)
 #SBATCH --mail-user=brittany.rife@ufl.edu   # Where to send mail	
-#SBATCH --time=12:00:00   # Walltime (hours-min-sec)
-#SBATCH --output=split.%j.out   # Name output file 
+#SBATCH --time=36:00:00   # Walltime (hours-min-sec)
+#SBATCH --output=bwa_mem.%j.out   # Name output file 
 #SBATCH --account=salemi
 #SBATCH --qos=salemi-b
-#SBATCH --ntasks=1
+#SBTACH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=2gb # Previously 512gb
+#SBATCH --mem=2gb
 
-
+## For TRIM5a:
 date;hostname;pwd
 
 ml samtools
@@ -22,21 +22,21 @@ fi
 
 
 ## Create a new directory for individual bam files
-if [[ ! -d "SIV" ]]; then
-    mkdir SIV
+if [[ ! -d "TRIM5a" ]]; then
+    mkdir TRIM5a
 fi
 
-# Filter and index all reads that map to the SIV reference sequence
+# Filter and index all reads that map to the TRIM5a reference sequence
     bam2=$(ls *mapped_sorted.bam)
-    samtools view -b ${bam2} SIV_consensus2 -o SIV_sorted.bam # For new runs
-    samtools index SIV_sorted.bam
+    samtools view -b ${bam2} NC_041767.1 -o TRIM5a_sorted.bam # For newer runs
+    samtools index TRIM5a_sorted.bam
 
 
  
 # Start indexing sorted bam file for individual barcodes 
 
 
-cd SIV
+cd TRIM5a
 
 ml dibig_tools
 
@@ -46,7 +46,7 @@ NBC=$3
 
 if [[ -z $BAM ]];
 then
-    BAM="../SIV_sorted.bam"
+    BAM="../TRIM5a_sorted.bam"
 fi
 if [[ -z $BARCODES ]];
 then
@@ -90,3 +90,8 @@ done
 
 
 date
+
+
+
+
+
